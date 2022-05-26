@@ -62,5 +62,5 @@ export const getRandomSelectedIndexByProb = async (
     );
   }
 };
-export const createArray = (length: number): number[] =>
-  Array.from({ length }, (_, index) => index);
+export const createArray = (length: number, offset=0): number[] =>
+  Array.from({ length }, (_, index) => index+offset);

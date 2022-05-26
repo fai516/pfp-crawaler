@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.vscode/
+public/
+src/express/routes.ts
+.DS_Store

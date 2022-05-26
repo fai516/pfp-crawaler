@@ -27,6 +27,7 @@ export const writeJsonObject = async (
     parse ? JSON.stringify(obj, null, 2) : JSON.stringify(obj)
   );
 };
+
 export const readJsonObject = <T>(filePath: string): T => {
   let rawDataStr = readFileSync(filePath, "utf-8");
   return JSON.parse(rawDataStr) as T;

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "pretty": true,
+    "target": "es2021",
+    "lib": ["dom", "es2021"],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "allowJs": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@contract/*": ["./src/contracts/*"],
+      "@env/*": ["./env/*"],
+      "@util/*": ["./src/utils/*"],
+      "@api/*": ["./src/api/*"],
+      "@type/*": ["./src/types/*"],
+      "@constant/*": ["./src/constants/*"],
+      "@logger": ["./src/utils/logger"],
+      "@logic/*": ["./src/logic/*"],
+      "@multi-thread/*": ["./src/multi-thread/*"],
+      "tsoa": ["node_modules/tsoa/dist"]
+    }
+  },
+  "include": ["module.d.ts", "src/**/*", "test/**/*", "env", "constants/erc721.ts"],
+  "exclude": ["node_modules"]
+}
