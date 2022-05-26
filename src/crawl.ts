@@ -6,14 +6,13 @@ import { abi } from "@constant/erc721";
 import { createArray } from "@util/math";
 
 const fullMetadataDirPath = process.cwd() + "/outputs/metadata";
-const ipfsBase = "https://ipfs.infura.io/ipfs";
 
 // Bayc: 0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D
 // Azuki: 0xed5af388653567af2f388e6224dc7c4b3241c544
-const contractAddr = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
+const contractAddr = "0xed5af388653567af2f388e6224dc7c4b3241c544";
 const tokenIdRange = {
-  start: 2000,
-  end: 9999,
+  start: 0,
+  end: 1,
 };
 const workerCount = 20;
 const workerOpt = {
@@ -26,10 +25,13 @@ const contract = new web3.eth.Contract(abi, contractAddr);
 const getBaseUrl = (tokenId: string): Promise<string> => {
   return contract.methods.tokenURI(tokenId).call();
 };
-const convertToHttpsBaseUrl = (ipfsUrl: string): string => {
+const convertToHttpsBaseUrl = (url: string): string => {
+  if (url.match(/^https?:\/\//)) {
+    return url;
+  }
   const regex = new RegExp(/^ipfs:\/\/(?<id>.*)/);
-  const match = regex.exec(ipfsUrl);
-  return `${ipfsBase}/${match.groups.id}`;
+  const match = regex.exec(url);
+  return `${process.env.IPFS_GATEWAY}/${match.groups.id}`;
 };
 
 measurePeformance(async () => {
@@ -42,22 +44,17 @@ measurePeformance(async () => {
     tokenIdRange.start
   );
   const workers = await new Workers(sourcePath, workerCount, workerOpt).init();
-  console.log(numArr);
-
   await workers.execute(numArr, async (worker, tokenId) => {
     let retryRemaining = +process.env.MAX_FETCH_RETRY_COUNT;
     while (retryRemaining > 0) {
       try {
         const tokenIdStr = tokenId.toString();
         const ipfsTokenUrl = await getBaseUrl(tokenIdStr);
+
         const httpTokenUrl = convertToHttpsBaseUrl(ipfsTokenUrl);
         const data = await worker.getRequest(httpTokenUrl);
-        const filePath = `${fullMetadataDirPath}/${tokenIdStr}.json`
-        writeJsonObject(
-          filePath,
-          data,
-          true
-        );
+        const filePath = `${fullMetadataDirPath}/${tokenIdStr}.json`;
+        writeJsonObject(filePath, data, true);
         await sleepInSec(+process.env.NEXT_FETCH_WAIT_IN_SEC);
         return `Wrote ${filePath}.`;
       } catch (err) {

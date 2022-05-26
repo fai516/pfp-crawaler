@@ -7,7 +7,7 @@ import {
   IArtGenSetting,
 } from "@type/art-gen";
 import { toValidProbabilityFormat, toProbabilityIntFormat } from "@util/math";
-import { chain, isEmpty } from "lodash";
+import { chain, isEmpty, isNil } from "lodash";
 import BigNumber from "bignumber.js";
 import { parse } from "path";
 
